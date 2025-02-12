@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+    color: white;
+    background-attachment: fixed;
+  }
+}
+
+@layer utilities {
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 8s ease infinite;
+  }
+
+  .bg-stars {
+    background-image: 
+      radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0.5px, transparent 0.5px),
+      radial-gradient(circle at 25% 25%, rgba(124, 58, 237, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px, 100px 100px;
+    position: relative;
+  }
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@keyframes shine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes cardGradient {
+  0% {
+    background: linear-gradient(
+      45deg,
+      rgba(76, 201, 240, 0.1) 0%,
+      rgba(114, 9, 183, 0.1) 100%
+    );
+  }
+  50% {
+    background: linear-gradient(
+      45deg,
+      rgba(114, 9, 183, 0.1) 0%,
+      rgba(76, 201, 240, 0.1) 100%
+    );
+  }
+  100% {
+    background: linear-gradient(
+      45deg,
+      rgba(76, 201, 240, 0.1) 0%,
+      rgba(114, 9, 183, 0.1) 100%
+    );
+  }
+}
