@@ -1,0 +1,34 @@
+.env
+.env.local
+*env.*.local
+.env.development
+.env.production
+.env.test
+
+
+contracts/cache/
+contracts/build
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+app/bin/
+app/include/
+app/lib/
+app/lib64/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+
+# Virtual Environment
+venv/
+ENV/
+
+# Database
+*.db
+*.sqlite3
+
+# Environment variables
+.env 
