@@ -114,7 +114,7 @@ client/
 
 1. Navigate to the frontend directory:
    ```sh
-   cd client
+   cd frontend
    ```
 2. Install dependencies:
    ```sh
