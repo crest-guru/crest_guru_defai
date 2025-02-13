@@ -16,20 +16,31 @@ def create_app():
     """Initialize all application components"""
     
     settings = Settings()
-    
-    
     app = Flask(__name__)
     
+
     CORS(app, resources={
-        r"/api/*": {  
-            "origins": [
-                "http://localhost:5000",
-                "http://127.0.0.1:5000",
-                "http://localhost:3000",
-                "http://127.0.0.1:3000"
+        r"/api/*": {
+            "origins": "*",  
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], 
+            "allow_headers": [
+                "Content-Type", 
+                "x-api-key", 
+                "Authorization",
+                "Access-Control-Allow-Headers",
+                "Access-Control-Allow-Origin",
+                "Access-Control-Allow-Methods",
+                "Origin",
+                "Accept",
+                "X-Requested-With"
             ],
-            "methods": ["GET", "POST", "OPTIONS"],
-            "allow_headers": ["Content-Type", "x-api-key"]
+            "expose_headers": [
+                "Content-Type", 
+                "Authorization",
+                "Access-Control-Allow-Origin"
+            ],
+            "supports_credentials": True,
+            "max_age": 86400  
         }
     })
     
@@ -37,6 +48,14 @@ def create_app():
     app.register_blueprint(wallet_bp, url_prefix='/api/wallet')
     app.register_blueprint(info_bp, url_prefix='/api')
     app.register_blueprint(ai_request_bp, url_prefix='/api')
+    
+    @app.after_request
+    def after_request(response):
+        """Add headers to every response"""
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,x-api-key')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,PATCH')
+        return response
     
     return app
 

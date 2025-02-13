@@ -13,10 +13,6 @@ class ProtocolRegistry:
             "class": TokenProtocol,
             "method": "approve"
         },
-        "silo_deposit": {
-            "class": SiloProtocol,
-            "method": "deposit"
-        },
         "silo_withdraw": {
             "class": SiloProtocol,
             "method": "withdraw"

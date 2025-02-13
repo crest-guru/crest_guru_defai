@@ -2,7 +2,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthorizers } from "@/context/AuthorizersContext";
 import { ethers } from "ethers";
 
-const RPC_URL = "https://rpc.soniclabs.com";
+const RPC_URL = import.meta.env.VITE_RPC_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const walletEvents = new EventTarget();
 export const WALLET_CREATED_EVENT = 'walletCreated';
@@ -37,7 +38,7 @@ export function useWalletApi() {
 
   const getWalletInfo = async (userAddress: string): Promise<WalletInfo | null> => {
     try {
-      const response = await fetch(`http://127.0.0.1:5010/api/wallet/info?address=${userAddress}`);
+      const response = await fetch(`${API_BASE_URL}/api/wallet/info?address=${userAddress}`);
       
       if (!response.ok) {
         throw new Error('Failed to get wallet info');
@@ -60,7 +61,7 @@ export function useWalletApi() {
 
   const createWallet = async (userAddress: string): Promise<WalletResponse | null> => {
     try {
-      const response = await fetch('http://127.0.0.1:5010/api/wallet/create', {
+      const response = await fetch(`${API_BASE_URL}/api/wallet/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,30 +70,19 @@ export function useWalletApi() {
         body: JSON.stringify({ address: userAddress }),
       });
 
+   
+      console.log('Response status:', response.status);
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
+
       if (!response.ok) {
-        const errorData = await response.text();
-        console.error('Server error:', errorData);
-
-        
-        if (errorData.includes('UNIQUE constraint failed')) {
-          
-          walletEvents.dispatchEvent(new CustomEvent('system', { 
-            detail: 'Account already exists. Here are your wallet details:' 
-          }));
-
-          
-          const existingWallet = await getWalletInfo(userAddress);
-          if (existingWallet) {
-            return null; 
-          }
-        }
-
         throw new Error(`Server error: ${response.status}`);
       }
 
-      const data = await response.json();
       
-      // Сохраняем адреса авторизаторов
+      const data = JSON.parse(responseText);
+      
+      
       setAuthorizers({
         approveAuthorizer: data.approve_authorizer_address,
         siloAuthorizer: data.silo_authorizer_address
@@ -146,7 +136,7 @@ export function useWalletApi() {
 
   const sendAIRequest = async (userAddress: string, request: string): Promise<any> => {
     try {
-      const response = await fetch('http://127.0.0.1:5010/api/ai_request', {
+      const response = await fetch(`${API_BASE_URL}/api/ai_request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
