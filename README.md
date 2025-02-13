@@ -147,26 +147,27 @@ sequenceDiagram
 ```
 
 ### Transaction Execution Flow
-```mermaid
+
 ```mermaid
 sequenceDiagram
     participant User
     participant Backend
-    participant AI/LLM
+    participant AILLM
     participant Cobo
     participant Authorizer
     participant Safe
     participant Target
 
     User->>Backend: POST /api/ai_request
-    Backend->>AI/LLM: 1. Process natural language request
-    AI/LLM-->>Backend: 2. Return structured transaction data
+    Backend->>AILLM: 1. Process natural language request
+    AILLM-->>Backend: 2. Return structured transaction data
     Backend->>Cobo: 3. Prepare Transaction
     Cobo->>Authorizer: 4. Validate Transaction
     Authorizer->>Safe: 5. Execute if Valid
     Safe->>Target: 6. Call Target Contract
     Target-->>User: 7. Result
 ```
+
 ### Contract Deployment and Ownership Flow
 ```mermaid
 sequenceDiagram
