@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import cors from 'cors';
@@ -6,45 +6,92 @@ import dotenv from 'dotenv';
 import http from 'http';
 import path from 'path';
 
-
 dotenv.config({ 
   path: path.resolve(process.cwd(), '.env.local')
 });
 
 const app = express();
+
 const server = http.createServer(app);
 
-
-const PORT = process.env.PORT || 5011;        
-const API_URL = process.env.VITE_API_URL;     
-const FRONTEND_URL = process.env.VITE_FRONTEND_URL;
-
+const PORT = process.env.PORT || 5010;
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const DEV_URL = process.env.VITE_API_URL_DEV || 'http://localhost:5010';
+const PROD_URL = process.env.VITE_API_URL_PROD ;
 
 const corsOptions = {
-  origin: [FRONTEND_URL],
+  origin: NODE_ENV === 'development' 
+    ? [
+        DEV_URL,
+        DEV_URL.replace('5010', '5011')
+      ]
+    : [
+        PROD_URL,
+        PROD_URL.replace('5010', '5011')
+      ],
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Accept'],
+  allowedHeaders: [
+    'Content-Type',
+    'Accept'
+  ],
   credentials: true
 };
 
+app.use((req, res, next) => {
+  console.log('Incoming request:', {
+    origin: req.headers.origin,
+    method: req.method,
+    path: req.path
+  });
+  next();
+});
 
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
 app.options('*', cors(corsOptions));
 
-// Маршруты
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+app.use((req, res, next) => {
+  const start = Date.now();
+  const path = req.path;
+  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+
+  const originalResJson = res.json;
+  res.json = function (bodyJson, ...args) {
+    capturedJsonResponse = bodyJson;
+    return originalResJson.apply(res, [bodyJson, ...args]);
+  };
+
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    if (path.startsWith("/api")) {
+      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+      if (capturedJsonResponse) {
+        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      }
+
+      if (logLine.length > 80) {
+        logLine = logLine.slice(0, 79) + "…";
+      }
+
+      log(logLine);
+    }
+  });
+
+  next();
+});
+
 registerRoutes(app);
 
-if (process.env.NODE_ENV === 'development') {
+if (NODE_ENV === 'development') {
   await setupVite(app, server);
 } else {
   serveStatic(app);
 }
 
-
 server.listen(PORT, "0.0.0.0", () => {
-  log(`Frontend server running on port ${PORT}`);
-  log(`API URL: ${API_URL}`);
+  log(`Server running in ${NODE_ENV} mode on port ${PORT}`);
+  log(`API URL: ${NODE_ENV === 'development' ? DEV_URL : PROD_URL}`);
 });
