@@ -17,7 +17,7 @@
 
 ## Introduction
 
-Guru\_DeFAI is a Proof-of-Concept (PoC) MVP designed to showcase the necessity of custody solutions for AI agents. It leverages open-source COBO ARGUS smart contracts and project-specific rules to ensure secure interaction with blockchain protocols. The project includes smart contracts, a user interface for demonstration, and a backend to facilitate initial configuration and deployment.
+Guru\_DeFAII is a PoC MVP showcasing the need for custodial solutions for AI agents. It utilizes  smart contracts and project-specific rules to ensure secure blockchain interactions. The project includes smart contracts, a demo interface, and a backend for setup and deployment.
 
 ## Objective and Purpose
 
