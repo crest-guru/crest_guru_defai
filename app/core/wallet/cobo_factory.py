@@ -86,7 +86,7 @@ class CoboArgusFactory:
         except Exception as e:
             print("Failed to get Cobo address from receipt:", str(e))
             print("Full receipt:", receipt)
-            raise
+            return None
     
     def _init_helper_contract(self):
         """Initialize Argus helper contract"""
