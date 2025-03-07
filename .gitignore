@@ -11,6 +11,7 @@ contracts/build
 contracts/out/
 contracts/cache/
 contracts/broadcast/
+contracts/lib/
 app/bin/
 app/include/
 app/lib/
