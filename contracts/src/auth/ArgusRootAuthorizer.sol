@@ -114,7 +114,7 @@ contract ArgusRootAuthorizer is BaseAuthorizer, IAuthorizerSupportingHint {
         uint256 _flag = IAuthorizer(auth).flag();
 
         // The authorizer from hint should have either PreCheck or PostCheck.
-        require(_flag.isValid(), Errors.INVALID_AUTHORIZER_FLAG);
+        require(_flag.isValid(), CustomErrors.INVALID_AUTHORIZER_FLAG);
 
         if (!_flag.hasPreCheck()) {
             // If pre check handler not exist, default success.
@@ -124,11 +124,11 @@ contract ArgusRootAuthorizer is BaseAuthorizer, IAuthorizerSupportingHint {
 
         // Important: Validate the hint.
         // (1) The role from hint should be validated.
-        require(_hasRole(transaction, role), Errors.INVALID_HINT);
+        require(_hasRole(transaction, role), CustomErrors.INVALID_HINT);
 
         // (2) The authorizer from hint should have been registered with the role.
         bool isDelegateCall = transaction.flag.isDelegateCall();
-        require(authorizerSet[isDelegateCall][role].contains(auth), Errors.INVALID_HINT);
+        require(authorizerSet[isDelegateCall][role].contains(auth), CustomErrors.INVALID_HINT);
 
         // Cut the hint to sub hint.
         TransactionData memory txn = transaction;
@@ -146,7 +146,7 @@ contract ArgusRootAuthorizer is BaseAuthorizer, IAuthorizerSupportingHint {
         (bytes32 role, address auth, bytes memory subHint) = _unpackHint(transaction.hint);
         uint256 _flag = IAuthorizer(auth).flag();
 
-        require(_flag.isValid(), Errors.INVALID_AUTHORIZER_FLAG);
+        require(_flag.isValid(), CustomErrors.INVALID_AUTHORIZER_FLAG);
         if (!_flag.hasPostCheck()) {
             // If post check handler not exist, default success.
             authData.result = AuthResult.SUCCESS;
@@ -155,11 +155,11 @@ contract ArgusRootAuthorizer is BaseAuthorizer, IAuthorizerSupportingHint {
 
         // Important: Validate the hint.
         // (1) The role from hint should be validated.
-        require(_hasRole(transaction, role), Errors.INVALID_HINT);
+        require(_hasRole(transaction, role), CustomErrors.INVALID_HINT);
 
         // (2) The authorizer from hint should have been registered with the role.
         bool isDelegateCall = transaction.flag.isDelegateCall();
-        require(authorizerSet[isDelegateCall][role].contains(auth), Errors.INVALID_HINT);
+        require(authorizerSet[isDelegateCall][role].contains(auth), CustomErrors.INVALID_HINT);
 
         TransactionData memory txn = transaction;
         txn.hint = subHint;
@@ -187,7 +187,7 @@ contract ArgusRootAuthorizer is BaseAuthorizer, IAuthorizerSupportingHint {
         bytes32[] memory txRoles = _getRoles(transaction);
         uint256 roleLength = txRoles.length;
         if (roleLength == 0) {
-            authData.message = Errors.EMPTY_ROLE_SET;
+            authData.message = CustomErrors.EMPTY_ROLE_SET;
             return authData;
         }
 
@@ -216,7 +216,7 @@ contract ArgusRootAuthorizer is BaseAuthorizer, IAuthorizerSupportingHint {
             // Temporary data for post checker to collect hint.
             authData.data = abi.encode(preCheckDataCache);
         } else {
-            authData.message = Errors.ALL_AUTH_FAILED;
+            authData.message = CustomErrors.ALL_AUTH_FAILED;
         }
 
         delete preCheckDataCache; // gas refund.
@@ -236,7 +236,7 @@ contract ArgusRootAuthorizer is BaseAuthorizer, IAuthorizerSupportingHint {
         uint256 length = preResults.length;
 
         // We should have reverted in preExecCheck. But safer is better.
-        require(length > 0, Errors.INVALID_HINT_COLLECTED);
+        require(length > 0, CustomErrors.INVALID_HINT_COLLECTED);
 
         bool isDelegateCall = transaction.flag.isDelegateCall();
 
@@ -244,7 +244,7 @@ contract ArgusRootAuthorizer is BaseAuthorizer, IAuthorizerSupportingHint {
             bytes32 role = preResults[i].role;
             address authAddress = preResults[i].authorizer;
 
-            require(authorizerSet[isDelegateCall][role].contains(authAddress), Errors.INVALID_HINT_COLLECTED);
+            require(authorizerSet[isDelegateCall][role].contains(authAddress), CustomErrors.INVALID_HINT_COLLECTED);
 
             // Run post check.
             AuthorizerReturnData memory preCheckData = preResults[i].authData;
@@ -262,7 +262,7 @@ contract ArgusRootAuthorizer is BaseAuthorizer, IAuthorizerSupportingHint {
             }
         }
         postData.result = AuthResult.FAILED;
-        postData.message = Errors.ALL_AUTH_FAILED;
+        postData.message = CustomErrors.ALL_AUTH_FAILED;
     }
 
     function collectHint(
@@ -324,7 +324,7 @@ contract ArgusRootAuthorizer is BaseAuthorizer, IAuthorizerSupportingHint {
             if (_flag.hasPreProcess() || _flag.hasPostProcess()) {
                 // An authorizer with process handler can NOT be installed twice as this cause
                 // confusion when running process handler twice in one transaction.
-                require(processSet[isDelegateCall].add(authorizer), Errors.SAME_PROCESS_TWICE);
+                require(processSet[isDelegateCall].add(authorizer), CustomErrors.SAME_PROCESS_TWICE);
 
                 emit NewProcessAdded(isDelegateCall, authorizer);
             }

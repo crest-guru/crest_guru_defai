@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity ^0.8.19;
 
-import "../Errors.sol";
+import "../CustomErrors.sol";
 import "./BaseVersion.sol";
 
 /// @title BaseOwnable - Simple ownership access control contract.
@@ -16,7 +16,7 @@ abstract contract BaseOwnable is BaseVersion {
     event NewOwnerSet(address indexed owner);
 
     modifier onlyOwner() {
-        require(owner == msg.sender, Errors.CALLER_IS_NOT_OWNER);
+        require(owner == msg.sender, CustomErrors.CALLER_IS_NOT_OWNER);
         _;
     }
 

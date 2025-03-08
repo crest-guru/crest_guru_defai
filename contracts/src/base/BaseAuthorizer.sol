@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "./BaseOwnable.sol";
-import "../Errors.sol";
+import "../CustomErrors.sol";
 import "../../interfaces/IAuthorizer.sol";
 import "../../interfaces/IAccount.sol";
 import "../../interfaces/IRoleManager.sol";
@@ -51,7 +51,7 @@ abstract contract BaseAuthorizer is IAuthorizer, BaseOwnable {
     }
 
     modifier onlyCaller() virtual {
-        require(msg.sender == caller, Errors.INVALID_CALLER);
+        require(msg.sender == caller, CustomErrors.INVALID_CALLER);
         _;
     }
 
@@ -96,7 +96,7 @@ abstract contract BaseAuthorizer is IAuthorizer, BaseOwnable {
     ) external virtual onlyCaller returns (AuthorizerReturnData memory authData) {
         if (paused) {
             authData.result = AuthResult.FAILED;
-            authData.message = Errors.AUTHORIZER_PAUSED;
+            authData.message = CustomErrors.AUTHORIZER_PAUSED;
         } else {
             authData = _preExecCheck(transaction);
         }
@@ -111,7 +111,7 @@ abstract contract BaseAuthorizer is IAuthorizer, BaseOwnable {
     ) external virtual onlyCaller returns (AuthorizerReturnData memory authData) {
         if (paused) {
             authData.result = AuthResult.FAILED;
-            authData.message = Errors.AUTHORIZER_PAUSED;
+            authData.message = CustomErrors.AUTHORIZER_PAUSED;
         } else {
             authData = _postExecCheck(transaction, callResult, preData);
         }
@@ -133,9 +133,9 @@ abstract contract BaseAuthorizer is IAuthorizer, BaseOwnable {
     /// @dev Extract the roles of the delegate. If no roleManager set return empty lists.
 
     function _getRoleManager() internal view returns (address roleManager) {
-        require(account != address(0), Errors.ACCOUNT_NOT_SET);
+        require(account != address(0), CustomErrors.ACCOUNT_NOT_SET);
         roleManager = IAccount(account).roleManager();
-        require(roleManager != address(0), Errors.ROLE_MANAGER_NOT_SET);
+        require(roleManager != address(0), CustomErrors.ROLE_MANAGER_NOT_SET);
     }
 
     function _getRoles(TransactionData calldata transaction) internal view returns (bytes32[] memory roles) {

@@ -46,7 +46,7 @@ abstract contract BaseACL is BaseAuthorizer {
     ) internal pure returns (AuthorizerReturnData memory authData) {
         if (success) {
             // ACL checking functions should not return any bytes which differs from normal view functions.
-            require(revertData.length == 0, Errors.ACL_FUNC_RETURNS_NON_EMPTY);
+            require(revertData.length == 0, CustomErrors.ACL_FUNC_RETURNS_NON_EMPTY);
             authData.result = AuthResult.SUCCESS;
         } else {
             if (revertData.length < 68) {
@@ -94,7 +94,7 @@ abstract contract BaseACL is BaseAuthorizer {
     ) internal virtual override returns (AuthorizerReturnData memory authData) {
         if (!_contractCheck(transaction)) {
             authData.result = AuthResult.FAILED;
-            authData.message = Errors.NOT_IN_CONTRACT_LIST;
+            authData.message = CustomErrors.NOT_IN_CONTRACT_LIST;
             return authData;
         }
         (bool success, bytes memory revertData) = address(this).staticcall(_packTxn(transaction));
@@ -145,6 +145,6 @@ abstract contract BaseACL is BaseAuthorizer {
     function contracts() public view virtual returns (address[] memory _contracts) {}
 
     fallback() external virtual {
-        revert(Errors.METHOD_NOT_ALLOW);
+        revert(CustomErrors.METHOD_NOT_ALLOW);
     }
 }

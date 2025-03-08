@@ -49,7 +49,7 @@ abstract contract BaseAccount is IAccount, BaseOwnable {
     ///      of catch-all rule and simple but strong protection from malicious/compromised/buggy
     ///      authorizers which permit any operations.
     modifier onlyDelegate() {
-        require(hasDelegate(msg.sender), Errors.INVALID_DELEGATE);
+        require(hasDelegate(msg.sender), CustomErrors.INVALID_DELEGATE);
         _;
     }
 
@@ -208,12 +208,12 @@ abstract contract BaseAccount is IAccount, BaseOwnable {
     function _executeTransactionWithCheck(
         TransactionData memory transaction
     ) internal virtual returns (TransactionResult memory result) {
-        require(authorizer != address(0), Errors.AUTHORIZER_NOT_SET);
+        require(authorizer != address(0), CustomErrors.AUTHORIZER_NOT_SET);
         uint256 flag = IAuthorizer(authorizer).flag();
         bool doCollectHint = transaction.hint.length == 0;
 
         // Ensures either _preExecCheck or _postExecCheck (or both) will run.
-        require(flag.isValid(), Errors.INVALID_AUTHORIZER_FLAG);
+        require(flag.isValid(), CustomErrors.INVALID_AUTHORIZER_FLAG);
 
         // 1. Do pre check, revert the entire txn if failed.
         AuthorizerReturnData memory preData;

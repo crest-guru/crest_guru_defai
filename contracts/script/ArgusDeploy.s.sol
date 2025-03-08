@@ -20,8 +20,8 @@ contract ArgusDeploy is Script {
         CoboSafeAccount coboAccount = new CoboSafeAccount(address(0));
         FlatRoleManager roleManager = new FlatRoleManager(address(0));
         ArgusRootAuthorizer rootAuth = new ArgusRootAuthorizer(address(0), address(0), address(0));
-        ApproveAuthV2 approveAuth = new ApproveAuthV2(address(0), address(0), address(0));
-        SiloAuthorizer siloAuthorizer = new SiloAuthorizer(address(0), address(0), address(0));
+        ApproveAuthorizerV2 approveAuth = new ApproveAuthorizerV2(address(0), address(0) );
+        SiloAuthorizer siloAuthorizer = new SiloAuthorizer(address(0), address(0));
 
         factory.addImplementation(address(accountHelper));
         factory.addImplementation(address(viewHelper));
