@@ -13,7 +13,7 @@ export function Terminal() {
   const [messages, setMessages] = useState<Message[]>([
     {
       type: 'system',
-      content: 'DeFAI Terminal v1.0.0 initialized. Waiting for wallet connection...',
+      content: 'DeFAI Terminal v1.0.0 initialized.',
       timestamp: new Date()
     }
   ]);
