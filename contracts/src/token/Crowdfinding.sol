@@ -2,22 +2,28 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
+
 import "./token.sol";
 
-contract Crowdfinding {
+contract Crowdfinding  {
+
     bool public locked;
     mapping(address => uint256) public contributions;
     address public USDC;
     address public owner;
     uint256 public rate;
     uint256 public amountContributed;
-    MyToken public token;
-
+    AIInterface public token;
+    
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Ownable: caller is not the owner");
+        _;
+    }
 
     constructor(address _USDC, address _token, uint256 _rate, address _owner) {
         locked = false;
         USDC = _USDC;
-        token = MyToken(_token);
+        token = AIInterface(_token);
         rate = _rate;
         owner = _owner;
     }
@@ -51,6 +57,11 @@ contract Crowdfinding {
 
     function getAmountContributed() public view returns (uint256) {
         return amountContributed/10**6;
+    }
+
+    function withdraw() external onlyOwner {
+        (bool success, ) = address(token).call(abi.encodeWithSelector(IERC20.transfer.selector, msg.sender, IERC20(token).balanceOf(address(this))));
+        require(success, "Transfer failed");
     }
 
 }
