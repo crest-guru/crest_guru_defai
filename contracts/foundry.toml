@@ -6,6 +6,7 @@ via_ir = true
 remappings = [
     '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/',  # изменили этот remapping
     '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/',
-    'forge-std/=lib/forge-std/src/'
+    'forge-std/=lib/forge-std/src/',
+    '@safe-account/contracts/=lib/safe-smart-account/contracts'
 ]
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
