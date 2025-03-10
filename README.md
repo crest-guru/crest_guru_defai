@@ -19,6 +19,17 @@
 
 Guru\_DeFAII is a PoC MVP showcasing the need for custodial solutions for AI agents. It utilizes  smart contracts and project-specific rules to ensure secure blockchain interactions. The project includes smart contracts, a demo interface, and a backend for setup and deployment.
 
+---
+## Examples
+```
+make approve wS to SiloRouter in amount 1000000
+```
+
+```
+make depoit native currency to Silo where max APR with amount 10000000
+```
+---
+
 ## Objective and Purpose
 
 The primary goal of Guru\_DeFAI is to demonstrate how AI agents can securely manage blockchain assets using decentralized custody solutions. The project ensures that custody configurations are transparent and open-source, allowing controlled interactions with DeFi protocols. The backend component simplifies initial setup and rule enforcement, making it easier to integrate AI with decentralized custody.
