@@ -5,16 +5,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import time
 
-# Создаем модель для запроса
+
 class WalletCreateRequest(BaseModel):
     address: str
 
 app = FastAPI()
 
-# Настройка CORS - оставляем только одну настройку
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # В продакшене заменить на конкретные домены
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -29,8 +29,7 @@ def verify_signature(address: str, message: str, signature: str) -> bool:
 @app.post("/api/wallet/create")
 async def create_wallet(request: WalletCreateRequest):
     try:
-        # Здесь ваша логика создания кошелька
-        # Пример ответа:
+        
         return {
             "safe_address": "0x64518d15e6306ce4FCa2eedD19480172a244b0E5",
             "cobo_address": "0xF948b577A7cd235e439616DdDbC844211E5a5087",
@@ -43,7 +42,7 @@ async def create_wallet(request: WalletCreateRequest):
 @app.get("/api/wallet/info")
 async def get_wallet_info(address: str):
     try:
-        # Здесь будет реальный запрос к API
+        
         response = await get_actual_wallet_info(address)  # Это просто для примера
         return response  # Просто возвращаем то, что пришло от API
     except Exception as e:
