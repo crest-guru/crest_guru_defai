@@ -22,66 +22,59 @@ def create_wallet():
         user_address = request.json.get('address')
         if not user_address:
             return jsonify({'error': 'Address required'}), 400
-        
             
         # 1. create safe
         safe_factory = SafeWalletFactory(web3, settings)
         safe_address = safe_factory.create_safe_from_deployer()
         
-        # 2. create cobo
+        # 2. write wallet to db
+        create_wallet_record(user_address, safe_address)
+        
+        # 3. create cobo
         cobo_factory = CoboArgusFactory(web3, settings)
         cobo_address = cobo_factory.create_cobo_for_safe(
             safe_address=safe_address,
             user_address=user_address
         )
-        if cobo_address == None:
-            return jsonify({
-                'error': 'Failed to create cobo address, try again later'
-            }), 500
-        else:
-            # 3. setup authorizers
-            authorizer_manager = AuthorizerManager(web3, settings)
-
-            # create approve authorizer
-            approve_authorizer_address = authorizer_manager.create_authorizer(
-                cobo_address=cobo_address,
-                user_address=user_address,
-                authorizer_type="ApproveAuthorizerV2",
-                role_name="approve"
-            )
-
-            # create silo authorizer
-            silo_authorizer_address = authorizer_manager.create_authorizer(
-                cobo_address=cobo_address,
-                user_address=user_address,
-                authorizer_type="SiloAuthorizer",
-                role_name="silo"
-            )
-            
-            # 4. transfer ownership of safe to user
-            safe_factory.transfer_ownership(
-                safe_address=safe_address,
-                new_owner=user_address
-            )
-
-            # 5. write wallet to db
-            create_wallet_record(user_address, safe_address)
-            # 6. update cobo address in db
-            update_cobo_address(user_address, cobo_address)
-
         
+        # 4. update cobo address in db
+        update_cobo_address(user_address, cobo_address)
         
+        # 5. setup authorizers
+        authorizer_manager = AuthorizerManager(web3, settings)
+
+        # create approve authorizer
+        approve_authorizer_address = authorizer_manager.create_authorizer(
+            cobo_address=cobo_address,
+            user_address=user_address,
+            authorizer_type="ApproveAuthorizerV2",
+            role_name="approve"
+        )
+
+        # create silo authorizer
+        silo_authorizer_address = authorizer_manager.create_authorizer(
+            cobo_address=cobo_address,
+            user_address=user_address,
+            authorizer_type="SiloAuthorizer",
+            role_name="silo"
+        )
         
-            return jsonify({
-                'safe_address': safe_address,
-                'cobo_address': cobo_address,
-                'approve_authorizer_address': approve_authorizer_address,
-                'silo_authorizer_address': silo_authorizer_address
-            })
+        # 7. transfer ownership of safe to user
+        safe_factory.transfer_ownership(
+            safe_address=safe_address,
+            new_owner=user_address
+        )
+        
+        return jsonify({
+            'safe_address': safe_address,
+            'cobo_address': cobo_address,
+            'approve_authorizer_address': approve_authorizer_address,
+            'silo_authorizer_address': silo_authorizer_address
+        })
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
     
 
 @wallet_bp.route('/execute', methods=['POST'])

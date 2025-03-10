@@ -107,7 +107,7 @@ client/
    ```
 3. Start the backend server:
    ```sh
-   python -m app.main
+   python -m main.py
    ```
 
 ### Frontend Setup
