@@ -30,7 +30,7 @@ contract CrowdfindingTest is Test {
         address(proxy).call(abi.encodeWithSignature("transfer(address,uint256)", address(crowdfinding), 20000000*10**18));
         vm.stopPrank();
 
-        crowdfinding = new Crowdfinding(USDC, address(proxy), 6666667, owner);
+        crowdfinding = new Crowdfinding(USDC, address(proxy), 666667, owner);
 
 
         vm.startPrank(address(Alice));
@@ -42,9 +42,9 @@ contract CrowdfindingTest is Test {
     }
 
     function test_A_convertFromUSDC() public {
-        uint256 amount = 150000000;
+        uint256 amount = 1*10**6;
         uint256 result = crowdfinding.convertFromUSDC(amount);
-        console.log("result", result);
+        console.log("result", result/10**18);
     }
 
 
@@ -74,6 +74,9 @@ contract CrowdfindingTest is Test {
 
         
     }
+
+    
+
 
     function test_E_withdrawNonOwner() public {
         vm.startPrank(address(Bob));

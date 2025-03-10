@@ -37,7 +37,7 @@ contract Crowdfinding  {
 
     function convertFromUSDC(uint256 amount) public view returns (uint256) {
         uint256 decimalsDiff = 10**12;
-        return (amount * rate*decimalsDiff)/10000;
+        return (amount * rate*decimalsDiff)/1000;
     }
     
     function contribute(uint256 amount) external returns (bool) {
