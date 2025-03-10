@@ -11,7 +11,7 @@ contract CrowdfindingTest is Test {
     uint256 SonicFork;
     address USDC = 0x29219dd400f2Bf60E5a23d13Be72B486D4038894;
     address owner = 0xDd006633A161deb07661B7e73eCf1fe3DdE3B1ff;
-    MyToken public token;
+    AIInterface public token;
     ERC1967Proxy public proxy;
     address Alice = makeAddr("Alice");
     address Bob = makeAddr("Bob");
@@ -20,16 +20,21 @@ contract CrowdfindingTest is Test {
         SonicFork = vm.createFork("https://rpc.soniclabs.com");
         vm.selectFork(SonicFork);
         
-        token = new MyToken();
+        token = new AIInterface();
         proxy = new ERC1967Proxy(address(token), "");
-        MyToken(address(proxy)).initialize(address(Alice), address(Alice), address(Alice));
+        AIInterface(address(proxy)).initialize(address(Alice), address(Alice), address(Alice), address(Alice));
 
+        console.log("token balance of owner", IERC20(address(proxy)).balanceOf(address(Alice)));
 
-        crowdfinding = new Crowdfinding(USDC, address(proxy), 6666667, owner);
+        vm.startPrank(address(Alice));
+        address(proxy).call(abi.encodeWithSignature("transfer(address,uint256)", address(crowdfinding), 20000000*10**18));
+        vm.stopPrank();
+
+        crowdfinding = new Crowdfinding(USDC, address(proxy), 666667, owner);
 
 
         vm.startPrank(address(Alice));
-        address(proxy).call(abi.encodeWithSignature("mint(address,uint256)", address(crowdfinding), 20000000*10**18)); 
+        address(proxy).call(abi.encodeWithSignature("transfer(address,uint256)", address(crowdfinding), 20000000*10**18));
         vm.stopPrank();
 
         vm.startPrank(address(0x322e1d5384aa4ED66AeCa770B95686271de61dc3));
@@ -37,16 +42,16 @@ contract CrowdfindingTest is Test {
     }
 
     function test_A_convertFromUSDC() public {
-        uint256 amount = 150000000;
+        uint256 amount = 1*10**6;
         uint256 result = crowdfinding.convertFromUSDC(amount);
-        console.log("result", result);
+        console.log("result", result/10**18);
     }
 
 
     function test_B_contribute() public {
         console.log("block number", block.number);
         vm.startPrank(address(Bob));
-        uint256 amount = 1500*10**6;
+        uint256 amount = 1400*10**6;
         address(USDC).call(abi.encodeWithSignature("approve(address,uint256)", address(crowdfinding), 100000000000000000000000000));
         crowdfinding.contribute(amount);
 
@@ -61,6 +66,23 @@ contract CrowdfindingTest is Test {
         address(USDC).call(abi.encodeWithSignature("approve(address,uint256)", address(crowdfinding), 100000000000000000000000000));
         bool success = crowdfinding.contribute(amount);
         assertTrue(success, "Contribution should fail");
+    }
+
+    function test_D_withdraw() public {
+        vm.startPrank(address(owner));
+        crowdfinding.withdraw();
+
+        
+    }
+
+    
+
+
+    function test_E_withdrawNonOwner() public {
+        vm.startPrank(address(Bob));
+        bool success = crowdfinding.withdraw();
+        
+
     }
 
 }

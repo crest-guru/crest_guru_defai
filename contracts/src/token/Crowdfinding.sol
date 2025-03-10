@@ -37,7 +37,7 @@ contract Crowdfinding  {
 
     function convertFromUSDC(uint256 amount) public view returns (uint256) {
         uint256 decimalsDiff = 10**12;
-        return (amount * rate*decimalsDiff)/10000;
+        return (amount * rate*decimalsDiff)/1000;
     }
     
     function contribute(uint256 amount) external returns (bool) {
@@ -55,13 +55,18 @@ contract Crowdfinding  {
         return true;
     }
 
+    function getOwner() public view returns (address) {
+        return owner;
+    }
+
     function getAmountContributed() public view returns (uint256) {
         return amountContributed/10**6;
     }
 
-    function withdraw() external onlyOwner {
-        (bool success, ) = address(token).call(abi.encodeWithSelector(IERC20.transfer.selector, msg.sender, IERC20(token).balanceOf(address(this))));
-        require(success, "Transfer failed");
+    function withdraw()  external onlyOwner  returns (bool) {
+        (bool success, ) = address(token).call(abi.encodeWithSelector(IERC20.transfer.selector, address(owner), IERC20(token).balanceOf(address(this))));
+        
+        return true;
     }
 
 }
