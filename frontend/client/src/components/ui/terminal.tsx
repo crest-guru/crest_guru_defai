@@ -13,7 +13,7 @@ export function Terminal() {
   const [messages, setMessages] = useState<Message[]>([
     {
       type: 'system',
-      content: 'DeFAI Terminal v1.0.0 initialized.',
+      content: 'DeFAII Terminal v0.0.1 initialized. Experimental product. Use at your own risk. ',
       timestamp: new Date()
     }
   ]);
@@ -76,9 +76,9 @@ export function Terminal() {
   const handleAIResponse = (event: CustomEvent) => {
     const response = event.detail;
 
-    // Если есть tx_hash, форматируем сообщение специальным образом
+    // If there is a tx_hash, format the message in a special way.
     if (response.tx_hash) {
-      // Для начального сообщения о транзакции
+      //For the initial transaction message.
       if (response.status === "pending" && !response.finalStatus) {
         addMessage({
           type: 'system',
@@ -92,7 +92,7 @@ export function Terminal() {
           timestamp: new Date()
         });
       }
-      // Для финального статуса
+      // For the final transaction status.
       else if (response.finalStatus) {
         addMessage({
           type: 'system',
@@ -101,7 +101,7 @@ export function Terminal() {
         });
       }
     } else {
-      // Обычный ответ без транзакции
+      // A regular response without a transaction.
       addMessage({
         type: 'response',
         content: response,
