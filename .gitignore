@@ -22,7 +22,7 @@ __pycache__/
 *$py.class
 .Python
 *.so
-
+.vscode/
 
 
 # Virtual Environment
