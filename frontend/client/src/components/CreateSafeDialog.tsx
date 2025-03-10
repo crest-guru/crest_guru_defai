@@ -11,7 +11,7 @@ interface CreateSafeDialogProps {
 
 export default function CreateSafeDialog({ open, onOpenChange }: CreateSafeDialogProps) {
   const { account } = useWeb3();
-  const { createWallet } = useWalletApi();
+  const { createWallet, getWalletInfo } = useWalletApi();
   const [isCreating, setIsCreating] = useState(false);
 
   const handleCreate = async () => {
@@ -19,6 +19,12 @@ export default function CreateSafeDialog({ open, onOpenChange }: CreateSafeDialo
     
     setIsCreating(true);
     try {
+      const existingWallet = await getWalletInfo(account);
+      if (existingWallet) {
+        onOpenChange(false);
+        return;
+      }
+
       const wallet = await createWallet(account);
       if (wallet) {
         onOpenChange(false);

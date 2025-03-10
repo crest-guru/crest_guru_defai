@@ -20,35 +20,15 @@ const DEV_URL = process.env.VITE_API_URL_DEV || 'http://localhost:5010';
 const PROD_URL = process.env.VITE_API_URL_PROD ;
 
 const corsOptions = {
-  origin: NODE_ENV === 'development' 
-    ? [
-        DEV_URL,
-        DEV_URL.replace('5010', '5011')
-      ]
-    : [
-        PROD_URL,
-        PROD_URL.replace('5010', '5011')
-      ],
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type',
-    'Accept'
-  ],
-  credentials: true
+  origin: true, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Accept', 'Origin'],
+  credentials: false 
 };
 
-app.use((req, res, next) => {
-  console.log('Incoming request:', {
-    origin: req.headers.origin,
-    method: req.method,
-    path: req.path
-  });
-  next();
-});
 
 app.use(cors(corsOptions));
 
-app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

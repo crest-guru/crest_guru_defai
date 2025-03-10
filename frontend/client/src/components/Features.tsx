@@ -24,7 +24,7 @@ export default function Features() {
     
     const walletInfo = await getWalletInfo(account);
     if (walletInfo?.status === 'success' && walletInfo.data.safe_address) {
-      const safeUrl = `https://app.safe.global/settings/setup ?safe=sonic:${walletInfo.data.safe_address}`;
+      const safeUrl = `https://app.safe.global/settings/setup?safe=sonic:${walletInfo.data.safe_address}`;
       window.open(safeUrl, '_blank');
     }
   };
