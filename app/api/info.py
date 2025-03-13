@@ -9,7 +9,8 @@ web3 = Web3(Web3.HTTPProvider(settings.RPC_URL))
 
 info_bp = Blueprint('info', __name__)
 
-@info_bp.route('/', methods=['GET', 'POST'])
+@info_bp.route('/', methods=['POST'])
+@info_bp.route('', methods=['POST'])
 def info() -> Dict[str, Any]:
     """Get protocol information
     
