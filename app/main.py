@@ -16,16 +16,12 @@ def create_app():
     settings = Settings()
     app = Flask(__name__)
     app.url_map.strict_slashes = False
+    frontend_url = settings.FRONTEND_URL
     
     ALLOWED_ORIGINS = [
         # Direct IP access with different ports
         
-        "http://localhost:5011",
-        "https://localhost:5011",
-        "http://aii.crest.guru",
-        "https://aii.crest.guru",
-        "https://www.aii.crest.guru",
-        "null"
+        frontend_url
     ]
     
     @app.before_request

@@ -16,13 +16,13 @@ const server = http.createServer(app);
 
 const PORT = 5011;
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const DEV_URL = process.env.VITE_API_URL_DEV || 'https://api.crest.guru';
-const PROD_URL = process.env.VITE_API_URL_PROD || 'https://api.crest.guru';
+const DEV_URL = process.env.VITE_API_URL || 'http://localhost:5010';
+const PROD_URL = process.env.VITE_API_URL || 'http://localhost:5010';
 
 const corsOptions = {
   origin: true, 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Accept', 'Origin', 'X-Requested-With', 'Access-Control-Request-Method', 'Access-Control-Request-Headers'],
+  allowedHeaders: ['Content-Type', 'Accept', 'Origin', 'X-Requested-With', 'Access-Control-Request-Method', 'Access-Control-Request-Headers', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials'],
   credentials: false 
 };
 
