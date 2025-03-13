@@ -14,15 +14,15 @@ const app = express();
 
 const server = http.createServer(app);
 
-const PORT = process.env.PORT || 5010;
+const PORT = 5011;
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const DEV_URL = process.env.VITE_API_URL_DEV || 'http://localhost:5010';
-const PROD_URL = process.env.VITE_API_URL_PROD ;
+const DEV_URL = process.env.VITE_API_URL || 'http://localhost:5010';
+const PROD_URL = process.env.VITE_API_URL || 'http://localhost:5010';
 
 const corsOptions = {
   origin: true, 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Accept', 'Origin'],
+  allowedHeaders: ['Content-Type', 'Accept', 'Origin', 'X-Requested-With', 'Access-Control-Request-Method', 'Access-Control-Request-Headers', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials'],
   credentials: false 
 };
 

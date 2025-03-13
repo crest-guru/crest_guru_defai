@@ -17,6 +17,7 @@ class Settings:
         self.DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
         self.HOST = os.getenv('HOST', '0.0.0.0')
         self.PORT = int(os.getenv('PORT', '5010'))
+        self.FRONTEND_URL = os.getenv('FRONTEND_URL', 'localhost:5011')
         
         self.RPC_URL = os.getenv('RPC_URL', 'https://rpc.soniclabs.com')
         self.CHAIN_ID = int(os.getenv('CHAIN_ID', '146'))

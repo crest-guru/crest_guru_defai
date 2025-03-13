@@ -15,10 +15,13 @@ settings = Settings()
 def create_app():
     settings = Settings()
     app = Flask(__name__)
+    app.url_map.strict_slashes = False
+    frontend_url = settings.FRONTEND_URL
     
     ALLOWED_ORIGINS = [
-        "http://51.38.112.120:5011",  
-        "http://localhost:5011"
+        # Direct IP access with different ports
+        
+        frontend_url
     ]
     
     @app.before_request
@@ -29,22 +32,29 @@ def create_app():
             print(f"Blocking request from: {origin}")
             abort(403)
         print(f"Allowing request from: {origin}")
-
-    CORS(app, resources={
-        r"/api/*": {
-            "origins": ALLOWED_ORIGINS,
-            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-            "allow_headers": [
-                "Content-Type",
-                "x-api-key",
-                "Authorization",
-                "Origin",
-                "Accept"
-            ],
-            "supports_credentials": True,
-            "max_age": 86400
-        }
-    })
+    CORS(app, resources={r"/api/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], "allow_headers": ["Content-Type", "Authorization", "Origin", "X-Requested-With"]}})
+    # CORS(app, resources={
+    #     r"/api/*": {
+    #         "origins": ALLOWED_ORIGINS,
+    #         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    #         "allow_headers": [
+    #             "Content-Type",
+    #             "x-api-key",
+    #             "Authorization",
+    #             "Origin",
+    #             "Accept",
+    #             "X-Requested-With",
+    #             "Access-Control-Request-Method",
+    #             "Access-Control-Request-Headers"
+    #         ],
+    #         "expose_headers": [
+    #             "Access-Control-Allow-Origin",
+    #             "Access-Control-Allow-Credentials"
+    #         ],
+    #         "supports_credentials": True,
+    #         "max_age": 86400
+    #     }
+    # })
     
     app.register_blueprint(wallet_bp, url_prefix='/api/wallet')
     app.register_blueprint(info_bp, url_prefix='/api/info')
