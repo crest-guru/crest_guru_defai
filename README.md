@@ -26,7 +26,7 @@ make approve wS to SiloRouter in amount 1000000
 ```
 
 ```
-make depoit native currency to Silo where max APR with amount 10000000
+make deposit native currency to Silo where max APR with amount 10000000
 ```
 ---
 
