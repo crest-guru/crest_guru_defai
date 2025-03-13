@@ -8,7 +8,7 @@ settings = Settings()
 
 ai_request_bp = Blueprint('ai_request', __name__)
 
-@ai_request_bp.route('/ai_request', methods=['POST'])
+@ai_request_bp.route('/', methods=['POST'])
 def ai_request():
     """Handle AI request and execute corresponding transaction
     

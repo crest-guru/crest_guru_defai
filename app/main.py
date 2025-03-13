@@ -13,52 +13,44 @@ from api.ai_request import ai_request_bp
 settings = Settings()
 
 def create_app():
-    """Initialize all application components"""
-    
     settings = Settings()
     app = Flask(__name__)
     
+    ALLOWED_ORIGINS = [
+        "http://51.38.112.120:5011",  
+        "http://localhost:5011"
+    ]
+    
+    @app.before_request
+    def check_origin():
+        from flask import request, abort
+        origin = request.headers.get('Origin')
+        if origin and origin not in ALLOWED_ORIGINS:
+            print(f"Blocking request from: {origin}")
+            abort(403)
+        print(f"Allowing request from: {origin}")
 
     CORS(app, resources={
         r"/api/*": {
-            "origins": "*",  
-            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], 
+            "origins": ALLOWED_ORIGINS,
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
             "allow_headers": [
-                "Content-Type", 
-                "x-api-key", 
+                "Content-Type",
+                "x-api-key",
                 "Authorization",
-                "Access-Control-Allow-Headers",
-                "Access-Control-Allow-Origin",
-                "Access-Control-Allow-Methods",
                 "Origin",
-                "Accept",
-                "X-Requested-With"
-            ],
-            "expose_headers": [
-                "Content-Type", 
-                "Authorization",
-                "Access-Control-Allow-Origin"
+                "Accept"
             ],
             "supports_credentials": True,
-            "max_age": 86400  
+            "max_age": 86400
         }
     })
     
-    
     app.register_blueprint(wallet_bp, url_prefix='/api/wallet')
-    app.register_blueprint(info_bp, url_prefix='/api')
-    app.register_blueprint(ai_request_bp, url_prefix='/api')
-    
-    @app.after_request
-    def after_request(response):
-        """Add headers to every response"""
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,x-api-key')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,PATCH')
-        return response
+    app.register_blueprint(info_bp, url_prefix='/api/info')
+    app.register_blueprint(ai_request_bp, url_prefix='/api/ai_request')
     
     return app
-
 def main():
     """Application entry point"""
     try:

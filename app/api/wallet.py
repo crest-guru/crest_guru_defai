@@ -15,7 +15,7 @@ settings = Settings()
 web3 = Web3(Web3.HTTPProvider(settings.RPC_URL))
 wallet_service = WalletService(web3, settings)
 
-@wallet_bp.route('/create', methods=['POST'])
+@wallet_bp.route('/', methods=['POST'])
 def create_wallet():
     """Create new wallet for user"""
     try:
