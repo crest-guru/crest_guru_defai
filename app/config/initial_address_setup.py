@@ -8,7 +8,7 @@ INITIAL_CONTRACTS = [
 
 INITIAL_SPENDERS = [
     "0x22AacdEc57b13911dE9f188CF69633cC537BdB76",  # SiloRouter
-    "0x7Ac9E324c2a211a389fac64b773433A17dB22948"  # PermitWagmi
+    "0x9303a680bA1A2924Bb6EeE5A7eD804df2E1824f7"  # Crowdfinding contract
     
 ] 
 

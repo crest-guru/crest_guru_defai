@@ -1,0 +1,17 @@
+{
+    "make_contribution": {
+        "type": "function",
+        "function": {
+            "name": "make_contribution",
+            "description": "Make a contribution to the crowdfinding contract",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "amount": {"type": "number", "description": "The amount to contribute"},
+                    "wallet_address": {"type": "string", "description": "The address of the user"}   
+                },
+                "required": ["amount", "wallet_address"]
+            }
+        }
+    }
+}
