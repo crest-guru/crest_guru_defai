@@ -44,6 +44,8 @@ class Settings:
             'FALLBACK_HANDLER_ADDRESS',
             '0x0000000000000000000000000000000000000000'
         )
+
+        self.OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
     
     ENABLE_TELEGRAM_BOT: bool = False
     TELEGRAM_TOKEN: Optional[str] = None

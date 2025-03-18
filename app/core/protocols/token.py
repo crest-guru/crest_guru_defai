@@ -93,6 +93,19 @@ class TokenProtocol(BaseProtocol):
             spender_address     # spender
         ).call()
 
+    def get_token_balance(
+        self,
+        token_address: str
+    ) -> int:
+        token_contract = self.web3.eth.contract(
+            address=token_address,
+            abi=self._load_abi("ERC20")
+        )
+        
+        return token_contract.functions.balanceOf(
+            self.safe_address
+        ).call()
+
     def build_transaction(
         self,
         action: str,

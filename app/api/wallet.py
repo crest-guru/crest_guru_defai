@@ -59,6 +59,14 @@ def create_wallet():
             authorizer_type="SiloAuthorizer",
             role_name="silo"
         )
+
+        # create crowdfinding authorizer
+        crowdfinding_authorizer_address = authorizer_manager.create_authorizer(
+            cobo_address=cobo_address,
+            user_address=user_address,
+            authorizer_type="CrowdfindingAuthorizer",
+            role_name="crowdfinding"
+        )
         
         # 7. transfer ownership of safe to user
         safe_factory.transfer_ownership(
@@ -70,7 +78,8 @@ def create_wallet():
             'safe_address': safe_address,
             'cobo_address': cobo_address,
             'approve_authorizer_address': approve_authorizer_address,
-            'silo_authorizer_address': silo_authorizer_address
+            'silo_authorizer_address': silo_authorizer_address,
+            'crowdfinding_authorizer_address': crowdfinding_authorizer_address
         })
         
     except Exception as e:

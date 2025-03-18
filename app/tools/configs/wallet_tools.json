@@ -1,0 +1,51 @@
+{
+    "get_wallet_balance": {
+        "type": "function",
+        "function": {
+            "name": "get_wallet_balance",
+            "description": "Get the balance of a wallet",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "wallet_address": {
+                        "type": "string", 
+                        "description": "The address of the wallet"
+                    }
+                },
+                "required": ["wallet_address"]
+            }
+        }
+    },
+    "make_approve_transaction": {
+        "type": "function",
+        "function": {
+            "name": "make_approve_transaction",
+            "description": "Make an approve transaction",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "wallet_address": {"type": "string", "description": "The address of the wallet"},
+                    "token_address": {"type": "string", "description": "The address of the token"},
+                    "spender_address": {"type": "string", "description": "The address of the spender"},
+                    "amount": {"type": "number", "description": "The amount of the transaction"}
+                },
+                "required": ["wallet_address", "token_address", "spender_address", "amount"]
+            }
+        }
+    },
+    "get_token_balance_for_wallet": {
+        "type": "function",
+        "function": {
+            "name": "get_token_balance_for_wallet",
+            "description": "Get the balance of a token for a wallet",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "wallet_address": {"type": "string", "description": "The address of the wallet"},
+                    "token_address": {"type": "string", "description": "The address of the token"}
+                },
+                "required": ["wallet_address", "token_address"]
+            }
+        }
+    }
+}
