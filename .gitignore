@@ -6,7 +6,7 @@
 .env.test
 
 
-contracts/cache/
+
 contracts/build
 contracts/out/
 contracts/cache/
