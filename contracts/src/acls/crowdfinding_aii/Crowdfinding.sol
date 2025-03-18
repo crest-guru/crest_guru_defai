@@ -14,7 +14,7 @@ contract Crowdfinding is BaseACL {
     constructor(address _owner,  address _caller) BaseACL(_owner, _caller) {
     }
 
-    function contibute(uint256 _amount) external view onlyContract(CROWDFINDING_ADDRESS) {
+    function contribute(uint256 _amount) external view onlyContract(CROWDFINDING_ADDRESS) {
         //pass (in this function we don't need check anything)
     }
 
