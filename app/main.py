@@ -20,19 +20,25 @@ def create_app():
     
     ALLOWED_ORIGINS = [
         # Direct IP access with different ports
-        
-        frontend_url
+        "http://localhost:5011",
+        frontend_url,
+
     ]
     
     @app.before_request
     def check_origin():
         from flask import request, abort
         origin = request.headers.get('Origin')
+        print(f"Received request from origin: {origin}")  # Debug line
+
         if origin and origin not in ALLOWED_ORIGINS:
             print(f"Blocking request from: {origin}")
             abort(403)
         print(f"Allowing request from: {origin}")
-    CORS(app, resources={r"/api/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], "allow_headers": ["Content-Type", "Authorization", "Origin", "X-Requested-With"]}})
+    CORS(app, resources={r"/api/*": {
+        "origins": "*", 
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], 
+        "allow_headers": ["Content-Type", "Authorization", "Origin", "X-Requested-With"]}})
     # CORS(app, resources={
     #     r"/api/*": {
     #         "origins": ALLOWED_ORIGINS,

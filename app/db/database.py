@@ -7,6 +7,7 @@ from bip_utils import Bip39SeedGenerator, Bip44, Bip44Changes, Bip44Coins
 from datetime import datetime
 
 DB_PATH = Path(__file__).parent.parent / 'data' / 'wallets.db'
+DB_PATH_THREADS = Path(__file__).parent.parent / 'data' / 'threads.db'
 
 def init_db():
     """Initialize database and create tables"""
@@ -28,6 +29,7 @@ def init_db():
         )
     """)
     
+    
     conn.commit()
     conn.close()
 
@@ -37,6 +39,15 @@ def get_db_connection():
         init_db()
     
     conn = sqlite3.connect(str(DB_PATH))
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def get_db_connection_threads():
+    """Get database connection with row factory"""
+    if not DB_PATH_THREADS.exists():
+        init_db_threads()
+    
+    conn = sqlite3.connect(str(DB_PATH_THREADS))
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -151,3 +162,98 @@ def update_cobo_address(user_address: str, cobo_address: str) -> None:
         raise e
     finally:
         conn.close() 
+
+def init_db_threads():
+    """Initialize database and create tables"""
+    
+    os.makedirs(os.path.dirname(DB_PATH_THREADS), exist_ok=True)
+    
+    conn = sqlite3.connect(str(DB_PATH_THREADS))
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS threads (
+            user_address TEXT PRIMARY KEY,
+            thread_id TEXT,
+            last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_threads TEXT
+        )
+    """)
+    
+    conn.commit()
+    conn.close()
+
+def create_thread_record(user_wallet_address: str, thread_id: str, timestamp: datetime, last_threads: list) -> None:
+    """Create new thread record"""
+    conn = get_db_connection_threads()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("""
+            INSERT INTO threads (user_address, thread_id, last_updated, last_threads)
+            VALUES (?, ?, ?, ?)
+        """, (user_wallet_address, thread_id, timestamp, last_threads))
+        
+        conn.commit()
+        
+    except Exception as e:
+        conn.rollback()
+        print(f"Error creating thread record: {e}")
+        raise e
+    finally:
+        conn.close()
+
+def get_thread_record(user_address: str) -> Dict[str, Any]:
+    """Get thread record"""
+    conn = get_db_connection_threads()
+    cursor = conn.cursor()  
+    
+    try:
+        cursor.execute("""
+            SELECT * FROM threads WHERE user_address = ?
+        """, (user_address,))
+        thread = cursor.fetchone()
+        return thread
+
+    except Exception as e:
+        print(f"Error getting thread record: {e}")
+        raise e
+    finally:
+        conn.close()
+
+def update_thread_record(user_address: str, thread_id: str, timestamp: datetime, last_threads: list) -> None:
+    """Update thread record"""
+    conn = get_db_connection_threads()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("""
+            UPDATE threads
+            SET thread_id = ?, last_updated = ?, last_threads = ?
+            WHERE user_address = ?
+        """, (thread_id, timestamp, last_threads, user_address))
+        
+        conn.commit()
+
+    except Exception as e:
+        conn.rollback()
+        print(f"Error updating thread record: {e}")
+        raise e
+    finally:
+        conn.close()
+
+def get_all_threads() -> Dict[str, Any]:
+    """Get all threads"""
+    conn = get_db_connection_threads()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("SELECT * FROM threads;")
+        threads = cursor.fetchall()
+        return threads
+    except Exception as e:
+        print(f"Error getting all threads: {e}")
+        raise e
+    finally:
+        conn.close()
+

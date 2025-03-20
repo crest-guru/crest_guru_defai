@@ -1,14 +1,20 @@
 import requests
 import json
+import time
+from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify
+
 from config.settings import Settings
 from .wallet import execute_transaction
 from app.assistants.assistant import Assistant
-import time
 
 settings = Settings()
 
+assistant = Assistant()
+
 ai_request_bp = Blueprint('ai_request', __name__)
+
+
 
 @ai_request_bp.route('/', methods=['POST'])
 @ai_request_bp.route('', methods=['POST'])
@@ -16,91 +22,48 @@ def ai_request():
     data = request.json
     print(data)
 
-    assistant = Assistant()
     
     
     assistant.delete_assistant()
     assistant.create_assistant()
-    assistant.create_thread()
-    assistant.create_message(f'help my with request: {data["request"]}, for user: {data["wallet"]}')
-    assistant.create_run()
-    assistant.wait_on_run(assistant.run, assistant.thread)
-    openai_response = assistant.get_response()
+
+    thread_id = assistant.create_thread(data["wallet"])
+    assistant.create_message(thread_id, f'help my with request: {data["request"]}, for user: {data["wallet"]}')
+    assistant.create_run(thread_id)
+    assistant.wait_on_run(assistant.run, thread_id)
+    openai_response = assistant.get_response(thread_id)
     return jsonify({"message": openai_response}), 200
-    # """Handle AI request and execute corresponding transaction
-    
-    # Request body:
-    # {
-    #     "user_address": "0x...",
-    #     "request": "text request for AI"
-    # }
-    # """
-    # try:
-    #     data = request.json
-    #     print(f"1. Received request: {data}")
+
+
+
+
+ 
+            
+
+           
+
         
-    #     request_data = {
-    #         "user_address": data['user_address'],
-    #         "request": data['request']
-    #     }
-        
-    #     headers = {
-    #         'x-api-key': settings.AI_SERVICE_KEY,
-    #         'Content-Type': 'application/json'
-    #     }
-        
-    #     print(f"2. Sending to AI service: {request_data}")
-    #     response = requests.post(
-    #         settings.AI_SERVICE_URL, 
-    #         json=request_data,
-    #         headers=headers
-    #     )
-        
-        
-        
-    #     ai_response = response.json()
-        
-    #     if 'output' in ai_response:
-    #         transaction_data = json.loads(ai_response['output'])
-    #         print(f"3. Parsed transaction data: {transaction_data}")
+
+
+    # class AssistantManager:
+    #     def __init__(self, user_address: str):
+    #         self.assistant = Assistant()
+    #         self.threads = {}
+    #         self.assistant.delete_assistant()
+    #         self.assistant_id = self.assistant.create_assistant()
+
+    #     def create_thread(self, user_address: str):
+    #         self.threads[user_address] = self.assistant.create_thread(user_address)
+
+    #     def get_thread(self, user_address: str):
+    #         return self.threads[user_address]
+
+    #     def create_message(self, thread_id: str, user_address: str, message: str):
+    #         self.assistant.create_message(thread_id, message)
+
+    #     def create_run(self, thread_id: str):
+    #         self.assistant.create_run(thread_id)
+
+    #     def get_response(self, thread_id: str):
+    #         return self.assistant.get_response(thread_id)
             
-    #         if transaction_data['user_address'] == '0xYourAddressHere':
-    #             transaction_data['user_address'] = data['user_address']
-            
-    #         if transaction_data['action'] == 'approve':
-    #             params = transaction_data['params']
-    #             params['spender_address'] = "0x22AacdEc57b13911dE9f188CF69633cC537BdB76"
-    #             transaction_data['params'] = params
-            
-    #         print(f"6. Final transaction data to execute: {transaction_data}")
-            
-    #         # make internal POST request to /api/wallet/execute
-    #         response = requests.post(
-    #             f"http://{settings.HOST}:{settings.PORT}/api/wallet/execute",
-    #             json=transaction_data,
-    #             headers={'Content-Type': 'application/json'}
-    #         )
-            
-    #         print(f"7. Execute response status: {response.status_code}")
-    #         print(f"7. Execute response: {response.json()}")
-            
-    #         return response.json(), response.status_code
-            
-    #     else:
-    #         error_msg = {
-    #             'error': 'Invalid AI response format',
-    #             'response': ai_response,
-    #             'details': 'AI response does not contain output field'
-    #         }
-    #         print(f"Error: {error_msg}")
-    #         return jsonify(error_msg), 400
-            
-    # except Exception as e:
-    #     import traceback
-    #     error_msg = {
-    #         'error': f'Failed to process AI request: {str(e)}',
-    #         'traceback': traceback.format_exc(),
-    #         'step': 'Error occurred during execution'
-    #     }
-    #     print(f"Error: {error_msg}")
-    #     return jsonify(error_msg), 500
