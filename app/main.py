@@ -19,7 +19,6 @@ def create_app():
     frontend_url = settings.FRONTEND_URL
     
     ALLOWED_ORIGINS = [
-        # Direct IP access with different ports
         "http://localhost:5011",
         frontend_url,
 
@@ -35,6 +34,17 @@ def create_app():
             print(f"Blocking request from: {origin}")
             abort(403)
         print(f"Allowing request from: {origin}")
+
+
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        return response
+
+    @app.route('/api/<path:path>', methods=['OPTIONS'])
+    def handle_options(path):
+        return '', 200
     CORS(app, resources={r"/api/*": {
         "origins": "*", 
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], 

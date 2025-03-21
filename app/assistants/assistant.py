@@ -64,8 +64,8 @@ class Assistant:
                     "user_wallet_address": user_wallet_address
                 }
             )
-        create_thread_record(user_wallet_address, self.thread.id, datetime.now(), None)
-        return self.thread
+            create_thread_record(user_wallet_address, self.thread.id, datetime.now(), None)
+            return self.thread.id
 
     def get_thread(self, thread_id):
         return openai.beta.threads.retrieve(

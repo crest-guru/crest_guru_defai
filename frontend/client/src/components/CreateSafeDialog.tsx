@@ -42,7 +42,7 @@ export default function CreateSafeDialog({ open, onOpenChange }: CreateSafeDialo
         </DialogHeader>
         <div className="space-y-4 py-4">
           <p className="text-sm text-muted-foreground">
-            This will create a new Safe wallet and Cobo address for your account.
+          Generate a new Safe wallet and assign it an operator address using default limits.
           </p>
           <Button 
             onClick={handleCreate} 
