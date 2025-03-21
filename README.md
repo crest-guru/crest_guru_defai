@@ -27,7 +27,7 @@ make approve for token address 0x29219dd400f2Bf60E5a23d13Be72B486D4038894 where 
 ```
 
 ```
-make contribution to crowdfinding contract with amount 100000 from current wallet
+make contribution to crowdfunding contract with amount 1000000 from current wallet
 ```
 ---
 
