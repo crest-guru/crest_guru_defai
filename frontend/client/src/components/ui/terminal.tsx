@@ -13,7 +13,7 @@ export function Terminal() {
   const [messages, setMessages] = useState<Message[]>([
     {
       type: 'system',
-      content: 'DeFAII Terminal v0.0.1 initialized. Experimental product. Use at your own risk. ',
+      content: 'DeFAII Terminal v0.1.0 initialized. Experimental product. Use at your own risk. ',
       timestamp: new Date()
     }
   ]);

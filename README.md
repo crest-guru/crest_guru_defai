@@ -11,7 +11,7 @@
 7. [Frontend Setup](#frontend-setup)
 8. [Technical Diagrams](#technical-diagrams)
 9. [License](#license)
-10. [N8N AI Prompt](#n8n-ai-prompt)
+
 
 ---
 
@@ -22,11 +22,12 @@ Guru\_DeFAII is a PoC MVP showcasing the need for custodial solutions for AI age
 ---
 ## Examples
 ```
-make approve wS to SiloRouter in amount 1000000
+make approve for token address 0x29219dd400f2Bf60E5a23d13Be72B486D4038894 where spender is 0x9303a680bA1A2924Bb6EeE5A7eD804df2E1824f7 with amount 10000000
+
 ```
 
 ```
-make deposit native currency to Silo where max APR with amount 10000000
+make contribution to crowdfinding contract with amount 100000 from current wallet
 ```
 ---
 
@@ -39,12 +40,7 @@ The primary goal of Guru\_DeFAI is to demonstrate how AI agents can securely man
 - **Backend**: Manages initial setup and rule enforcement.
 - **Frontend**: Provides a UI for demonstration and interaction.
 - **AI Agent Architecture**:
-  - **N8N Workflow Engine**: Orchestrates the process flow and handles:
-    - User request validation
-    - Transaction preparation
-    - Protocol interaction rules
-    - Response formatting
-  - **OpenAI Integration**: Processes natural language inputs to:
+  - **OpenAI Assistant Integration**: Processes natural language inputs to:
     - Understand user intentions
     - Convert text commands to executable actions
     - Validate request parameters
@@ -84,7 +80,10 @@ app/
 │   └── wallet/            # Wallet components
 ├── db/                    # Database interactions
 ├── abi/                   # Smart contract ABIs
-└── config/                # Configuration
+├── config/                # Configuration
+└── tools/                 # Ai tools
+    ├── configs/           # JSON description of tools 
+    └── functions/         # Assistant functions
 ```
 
 ### Frontend
@@ -226,8 +225,8 @@ AGENT_MNEMONIC=your_mnemonic_phrase
 AGENT_DERIVATION_PATH=m/44'/60'/0'/0/
 
 # AI Service settings
-AI_SERVICE_URL=your_ai_service_url
-AI_SERVICE_KEY=your_ai_service_key
+OPENAI_API_KEY=your_openai_key
+
 
 # Contract addresses
 SAFE_FACTORY_ADDRESS=0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67
@@ -256,30 +255,4 @@ NODE_ENV=development
 
 - **Cobo Argus** ([https://www.cobo.com/products/argus](https://www.cobo.com/products/argus)) under the LGPL-3.0 license.
 - **Safe Wallet** ([https://safe.global/](https://safe.global/)) under the LGPL-3.0 license.
-
-## N8N AI Prompt
-
-```
-You are a highly specialized assistant for blockchain operations and smart contract interactions. You will receive an input JSON with the following structure:
-
-{
-    "user_address": "<user address value>",
-    "request": "<a textual instruction, e.g., 'make approve wS to SiloRouter in amount 1 in ether'>"
-}
-
-When you need to find the highest yield or APR, ask get Silo APR tool. The result is the contract address of the highest APR. Use it following the answer format:
-
-Produce an output JSON, using GET_methods tool, in the exact format below (and nothing else):
-
-{
-    "user_address": "<value from the input>",
-    "action": "<determined method name>",
-    "params": {
-        "token_address": "<value>",
-        "amount": "<value>"
-    }
-}
-
-If you receive a 404 response from the GET_methods tool, your answer should be "cant get available methods".
-```
 
