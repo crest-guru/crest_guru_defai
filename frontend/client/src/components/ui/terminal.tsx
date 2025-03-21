@@ -161,9 +161,11 @@ export function Terminal() {
               {typeof msg.content === 'string' ? (
                 msg.content
               ) : (
-                <pre className="mt-1 ml-4 whitespace-pre">
-                  {formatResponse(msg.content)}
-                </pre>
+                <div className="mt-1 ml-4 overflow-x-auto">
+                  <pre className="whitespace-pre-wrap break-all">
+                    {formatResponse(msg.content)}
+                  </pre>
+                </div>
               )}
             </div>
           ))}
