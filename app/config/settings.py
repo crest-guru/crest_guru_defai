@@ -44,6 +44,8 @@ class Settings:
             'FALLBACK_HANDLER_ADDRESS',
             '0x0000000000000000000000000000000000000000'
         )
+
+        self.OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
     
     ENABLE_TELEGRAM_BOT: bool = False
     TELEGRAM_TOKEN: Optional[str] = None
@@ -53,4 +55,5 @@ class Settings:
     # Authorizer implementations
     APPROVE_AUTHORIZER_IMPL = os.getenv('APPROVE_AUTHORIZER_IMPL', "0x65949fD26c04DbA182F1B8C277A4BfA4fC77dACa")
     SILO_AUTHORIZER_IMPL = os.getenv('SILO_AUTHORIZER_IMPL', "0x425ab37703a7eE412e8187505055c82870D60B65")
+    CROWDFINDING_AUTHORIZER_IMPL = os.getenv('CROWDFINDING_AUTHORIZER_IMPL', "0xAEcf50BD977DF5685553a5D17eC78DEE3F5926F2")
     # can add other authorizer types here

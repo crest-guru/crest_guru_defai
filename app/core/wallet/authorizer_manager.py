@@ -22,7 +22,8 @@ class AuthorizerManager:
         
         self.authorizer_implementations = {
             "ApproveAuthorizerV2": settings.APPROVE_AUTHORIZER_IMPL,
-            "SiloAuthorizer": settings.SILO_AUTHORIZER_IMPL
+            "SiloAuthorizer": settings.SILO_AUTHORIZER_IMPL,
+            "CrowdfindingAuthorizer": settings.CROWDFINDING_AUTHORIZER_IMPL
         }
 
     def create_authorizer(

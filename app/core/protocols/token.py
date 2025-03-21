@@ -84,13 +84,26 @@ class TokenProtocol(BaseProtocol):
             int: Current allowance
         """
         token_contract = self.web3.eth.contract(
-            address=token_address,
+            address=self.web3.to_checksum_address(token_address),
             abi=self._load_abi("ERC20")
         )
         
         return token_contract.functions.allowance(
             self.safe_address,  # owner
             spender_address     # spender
+        ).call()
+
+    def get_token_balance(
+        self,
+        token_address: str
+    ) -> int:
+        token_contract = self.web3.eth.contract(
+            address=self.web3.to_checksum_address(token_address),
+            abi=self._load_abi("ERC20")
+        )
+        
+        return token_contract.functions.balanceOf(
+            self.safe_address
         ).call()
 
     def build_transaction(

@@ -134,7 +134,7 @@ export function useWalletApi() {
     }
   };
 
-  const sendAIRequest = async (userAddress: string, request: string): Promise<any> => {
+  const sendAIRequest = async (wallet: string, request: string): Promise<any> => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/ai_request`, {
         method: 'POST',
@@ -143,8 +143,8 @@ export function useWalletApi() {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          user_address: userAddress,
-          request: request
+          request: request,
+          wallet: wallet,
         } as AIRequest),
       });
 
