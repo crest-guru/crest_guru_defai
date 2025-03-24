@@ -41,29 +41,4 @@ def ai_request():
             
 
            
-
-        
-
-
-    # class AssistantManager:
-    #     def __init__(self, user_address: str):
-    #         self.assistant = Assistant()
-    #         self.threads = {}
-    #         self.assistant.delete_assistant()
-    #         self.assistant_id = self.assistant.create_assistant()
-
-    #     def create_thread(self, user_address: str):
-    #         self.threads[user_address] = self.assistant.create_thread(user_address)
-
-    #     def get_thread(self, user_address: str):
-    #         return self.threads[user_address]
-
-    #     def create_message(self, thread_id: str, user_address: str, message: str):
-    #         self.assistant.create_message(thread_id, message)
-
-    #     def create_run(self, thread_id: str):
-    #         self.assistant.create_run(thread_id)
-
-    #     def get_response(self, thread_id: str):
-    #         return self.assistant.get_response(thread_id)
             

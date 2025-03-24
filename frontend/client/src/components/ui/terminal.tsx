@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import { ScrollArea } from './scroll-area';
 import { useWeb3 } from '@/context/Web3Context';
 import { walletEvents, WALLET_CREATED_EVENT, WALLET_INFO_EVENT, AI_RESPONSE_EVENT, useWalletApi } from '@/hooks/useWalletApi';
@@ -20,6 +20,7 @@ export function Terminal() {
   const [input, setInput] = useState('');
   const { account } = useWeb3();
   const { sendAIRequest } = useWalletApi();
+  const [isPending, setIsPending] = useState(false);
 
   const addMessage = (message: Message) => {
     setMessages(prev => [...prev, message]);
@@ -124,6 +125,19 @@ export function Terminal() {
     };
   }, []);
 
+  const scrollToBottom = useCallback(() => {
+    setTimeout(() => {
+      const element = document.querySelector('.scroll-area-content');
+      if (element) {
+        element.scrollTop = element.scrollHeight;
+      }
+    }, 100);
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || !account) return;
@@ -134,16 +148,27 @@ export function Terminal() {
       timestamp: new Date()
     };
 
+    setInput('');
+    
     addMessage(userMessage);
     
-    await sendAIRequest(account, input);
-    
-    setInput('');
+    setIsPending(true);
+    addMessage({
+      type: 'system',
+      content: 'Response pending...',
+      timestamp: new Date()
+    });
+
+    try {
+      await sendAIRequest(account, input);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
     <div className="bg-[#1E1E1E] rounded-lg p-4 font-mono text-sm">
-      <ScrollArea className="h-[400px] mb-4">
+      <ScrollArea className="h-[400px] mb-4 scroll-area-content">
         <div className="space-y-2">
           {messages.map((msg, i) => (
             <div 
@@ -178,15 +203,15 @@ export function Terminal() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           className="flex-1 bg-[#2D2D2D] border border-gray-700 rounded px-2 py-1 text-white focus:outline-none focus:border-primary"
-          placeholder={account ? "Type your request..." : "Please connect wallet first..."}
-          disabled={!account}
+          placeholder={isPending ? "Waiting for response..." : account ? "Type your request..." : "Please connect wallet first..."}
+          disabled={!account || isPending}
         />
         <button
           type="submit"
           className="px-3 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20 disabled:opacity-50"
-          disabled={!account}
+          disabled={!account || isPending}
         >
-          Send
+          {isPending ? "Waiting..." : "Send"}
         </button>
       </form>
     </div>
