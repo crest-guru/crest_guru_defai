@@ -6,19 +6,19 @@ settings = Settings()
 
 def get_wallet_balance(wallet_address: str) -> float:
     web3 = Web3(Web3.HTTPProvider(settings.RPC_URL))
-    balance = web3.eth.get_balance(wallet_address)
+    balance = TokenProtocol(web3, settings, wallet_address).get_native_balance()
     return balance / 10**18
 
 def make_approve_transaction(wallet_address: str, token_address: str, spender_address: str, amount: float) -> str:
     web3 = Web3(Web3.HTTPProvider(settings.RPC_URL))
     token_protocol = TokenProtocol(web3, settings, wallet_address)
     
-    tx_hash = token_protocol.approve(
+    tx_hash, tx_status = token_protocol.approve(
         token_address=token_address,
         spender_address=spender_address,
         amount=amount
     )
-    return (f'Transaction successful, tx_hash: {tx_hash}')
+    return (f'Transaction successful, tx_hash: {tx_hash}, status: {tx_status}')
 
 def get_token_balance_for_wallet(wallet_address: str, token_address: str) -> str:
     web3 = Web3(Web3.HTTPProvider(settings.RPC_URL))

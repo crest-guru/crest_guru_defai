@@ -2,10 +2,12 @@ import openai
 from config.settings import Settings
 import json
 import time
+import logging
 from datetime import datetime
 from app.db.database import get_thread_record, create_thread_record
 from app.tools.assistant_tools import tool_registry
 settings = Settings()
+logger = logging.getLogger('app')
 
 TOOL_CONFIGS = tool_registry.configs
 TOOL_FUNCTIONS = tool_registry.functions
@@ -56,7 +58,7 @@ class Assistant:
         if threads_records:
             
             self.thread = threads_records["thread_id"]
-            print(f"Thread found: {self.thread}")
+            logger.info(f"Thread found: {self.thread}")
             return self.thread
         else:
             self.thread = openai.beta.threads.create(
@@ -77,6 +79,7 @@ class Assistant:
             thread_id=thread_id,
             assistant_id=self.assistant.id
         )
+        return self.run
     def get_run_status(self):
         return openai.beta.threads.runs.retrieve(
             thread_id=self.thread.id,
@@ -139,6 +142,15 @@ class Assistant:
                 tool_outputs=tool_outputs
             )
         return run
+    
+    def cancel_run(self, thread_id, run_id):
+        if self.run.status in ["in_progress", "requires_action"]:
+            return openai.beta.threads.runs.cancel(
+                thread_id=thread_id,
+                run_id=run_id
+            )
+        else:
+            return "Run is not in progress"
     
 
 

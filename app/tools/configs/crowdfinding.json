@@ -3,7 +3,7 @@
         "type": "function",
         "function": {
             "name": "make_contribution",
-            "description": "Make a contribution to the crowdfinding contract",
+            "description": "Make a contribution to the crowdfinding contract in our project (don't use it for other projects)",
             "parameters": {
                 "type": "object",
                 "properties": {

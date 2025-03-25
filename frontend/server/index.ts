@@ -14,7 +14,7 @@ const app = express();
 
 const server = http.createServer(app);
 
-const PORT = 5011;
+const PORT = process.env.PORT || 5011;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const DEV_URL = process.env.VITE_API_URL || 'http://localhost:5010';
 const PROD_URL = process.env.VITE_API_URL || 'http://localhost:5010';
