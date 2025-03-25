@@ -1,5 +1,7 @@
 import sys
 import os
+import logging
+from logging.handlers import RotatingFileHandler
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -12,11 +14,49 @@ from api.ai_request import ai_request_bp
 
 settings = Settings()
 
+
+def setup_logger():
+    """
+    Setup central logger configuration
+    Returns configured logger instance
+    """
+    logger = logging.getLogger('app')
+    logger.setLevel(logging.INFO)
+
+    
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+
+    
+    file_handler = RotatingFileHandler(
+        'logs/app.log',
+        maxBytes=1024 * 1024,  # 1MB
+        backupCount=10
+    )
+    
+    
+    console_handler = logging.StreamHandler()
+    
+    
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    
+    file_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
+    
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+    
+    return logger
+
 def create_app():
     settings = Settings()
     app = Flask(__name__)
     app.url_map.strict_slashes = False
     frontend_url = settings.FRONTEND_URL
+    logger = setup_logger()
+    app.logger = logger
     
     ALLOWED_ORIGINS = [
         "http://localhost:5011",
@@ -28,12 +68,12 @@ def create_app():
     def check_origin():
         from flask import request, abort
         origin = request.headers.get('Origin')
-        print(f"Received request from origin: {origin}")  # Debug line
+        e
 
         if origin and origin not in ALLOWED_ORIGINS:
-            print(f"Blocking request from: {origin}")
+            logger.error(f"Blocking request from: {origin}")
             abort(403)
-        print(f"Allowing request from: {origin}")
+        
 
 
     @app.after_request
@@ -87,7 +127,7 @@ def main():
             app.run(host=settings.HOST, port=settings.PORT, debug=settings.DEBUG)
             
     except Exception as e:
-        print(f"Failed to start application: {e}")
+        app.logger.error(f"Failed to start application: {e}")
         raise
 
 if __name__ == "__main__":
