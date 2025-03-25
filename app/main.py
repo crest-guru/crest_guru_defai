@@ -68,7 +68,7 @@ def create_app():
     def check_origin():
         from flask import request, abort
         origin = request.headers.get('Origin')
-        e
+        
 
         if origin and origin not in ALLOWED_ORIGINS:
             logger.error(f"Blocking request from: {origin}")
@@ -127,7 +127,7 @@ def main():
             app.run(host=settings.HOST, port=settings.PORT, debug=settings.DEBUG)
             
     except Exception as e:
-        app.logger.error(f"Failed to start application: {e}")
+        print(e)
         raise
 
 if __name__ == "__main__":

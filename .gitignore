@@ -5,6 +5,14 @@
 .env.production
 .env.test
 
+# Logs
+logs/
+logs/*
+*.log
+npm-debug.log*
+
+
+
 
 
 contracts/build
